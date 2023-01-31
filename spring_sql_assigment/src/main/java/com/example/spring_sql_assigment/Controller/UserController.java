@@ -23,36 +23,51 @@ public class UserController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity addUser(@Valid @RequestBody User user, Errors errors){
-        if(errors.hasErrors()){
-            String massege=errors.getFieldError().getDefaultMessage();
-            return ResponseEntity.status(400).body(massege);
-        }
+    public ResponseEntity addUser(@Valid @RequestBody User user){
         userService.addUser(user);
         return ResponseEntity.status(200).body("user added");
     }
     @PutMapping("/update/{id}")
-    public ResponseEntity updateUser(@PathVariable Integer id,@Valid @RequestBody User user,Errors errors){
-        if(errors.hasErrors()){
-            String massege=errors.getFieldError().getDefaultMessage();
-            return ResponseEntity.status(400).body(massege);
-        }
+    public ResponseEntity updateUser(@PathVariable Integer id,@Valid @RequestBody User user) {
+        userService.updateUser(id, user);
+        return ResponseEntity.status(200).body("user updated");
 
-        Boolean isUpdated=userService.updateUser(id,user);
-
-        if(isUpdated){
-            return ResponseEntity.status(200).body("user updated");
-        }
-        return ResponseEntity.status(400).body("wrong id");
     }
 
     @DeleteMapping("/delet/{id}")
     public ResponseEntity deletUser(@PathVariable Integer id){
-        boolean isdeleted=userService.deleteUser(id);
+       userService.deleteUser(id);
 
-        if(isdeleted){
-            return ResponseEntity.status(200).body("user deleted");
-        }
-        return ResponseEntity.status(400).body("wrong id");
+       return ResponseEntity.status(200).body("user deleted");
+
+
     }
+
+    @GetMapping("/byemail/{email}")
+    public ResponseEntity getByemail(@PathVariable String email){
+        User user=userService.findUserByEmail(email);
+        return ResponseEntity.status(200).body(user);
+    }
+
+    @GetMapping("/byage/{age}")
+    public ResponseEntity getByage(@PathVariable Integer age){
+        List<User> user=userService.findbyage(age);
+        return ResponseEntity.status(200).body(user);
+    }
+    @GetMapping("/byrole/{role}")
+    public ResponseEntity getByrole(@PathVariable String role){
+        List<User> user=userService.findbyrole(role);
+        return ResponseEntity.status(200).body(user);
+    }
+
+    @GetMapping("/check/{username}/{password}")
+    public ResponseEntity getByrole(@PathVariable String username,@PathVariable String password){
+        User user=userService.check(username,password);
+        return ResponseEntity.status(200).body(user);
+    }
+
+
+
+
+
 }
